@@ -5,6 +5,9 @@ on:
     - cron: '0 10 * * *'  # UTC 10:00 = 台北 18:00
   workflow_dispatch:  # 允許手動觸發
 
+permissions:
+  contents: write  # 允許推送到 repository
+
 jobs:
   run-screening:
     runs-on: ubuntu-latest
