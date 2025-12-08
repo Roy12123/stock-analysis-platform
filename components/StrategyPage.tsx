@@ -24,8 +24,8 @@ export default function StrategyPage({ title, description, fileName, icon }: Str
         setLoading(true)
         setError(null)
 
-        // 嘗試從 data/latest 目錄讀取
-        const response = await fetch(`/data/latest/${fileName}`)
+        // 從 GitHub Raw URL 讀取最新的 CSV 資料
+        const response = await fetch(`https://raw.githubusercontent.com/Roy12123/stock-analysis-platform/main/data/latest/${fileName}`)
 
         if (!response.ok) {
           throw new Error('資料檔案尚未產生，請等待 GitHub Actions 執行')
