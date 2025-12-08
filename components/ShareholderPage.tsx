@@ -17,7 +17,8 @@ export default function ShareholderPage() {
         setLoading(true)
         setError(null)
 
-        const response = await fetch('https://raw.githubusercontent.com/Roy12123/stock-analysis-platform/main/data/latest/大戶持有比例差.csv')
+        const timestamp = new Date().getTime()
+        const response = await fetch(`https://raw.githubusercontent.com/Roy12123/stock-analysis-platform/main/data/latest/大戶持有比例差.csv?t=${timestamp}`)
 
         if (!response.ok) {
           throw new Error('資料檔案尚未產生，請等待 GitHub Actions 執行')
