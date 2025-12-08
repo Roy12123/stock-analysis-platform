@@ -1,3 +1,5 @@
+'use client'
+
 import StrategyPage from '@/components/StrategyPage'
 
 export default function CategoryRankingPage() {

@@ -1,3 +1,5 @@
+'use client'
+
 import ShareholderPage from '@/components/ShareholderPage'
 
 export default function Page() {
