@@ -1,36 +1,222 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 📊 台股智能分析平台
 
-## Getting Started
+自動化台股篩選分析系統，透過 GitHub Actions 定時執行 Python 腳本，分析台股資料並展示於 Next.js 網站。
 
-First, run the development server:
+## 🌟 功能特色
 
+### 7 種篩選策略
+
+1. **🌐 外資大量買超** - 當日外資買超 > 5000張或 > 2億元
+2. **🏦 投信連續買超** - 近5日有4日買超、平均≥500張
+3. **📈 強勢股篩選** - 多頭排列、近10日新高、漲幅>0050
+4. **🚀 盤整突破** - 成交量爆發、突破盤整
+5. **📊 族群個股資料** - 依族群分類的個股資料
+6. **🏆 族群排名** - 族群平均漲幅與法人買賣超
+7. **💎 大戶持有比例差** - 追蹤主力資金動向
+
+### 核心功能
+
+- ⚡ **自動化執行** - GitHub Actions 定時執行 Python 腳本
+- 🔄 **每日更新** - 台北時間 10:00 & 18:00 自動更新
+- 🔍 **即時搜尋** - 支援關鍵字搜尋、欄位排序
+- 📱 **響應式設計** - 支援桌面與行動裝置
+- 🎨 **現代化 UI** - 使用 Next.js 15 + Tailwind CSS
+
+## 🚀 快速開始
+
+### 前置需求
+
+- Node.js 18+
+- Python 3.11+
+- FinMind API Token ([申請連結](https://finmindtrade.com/))
+
+### 本地開發
+
+1. **克隆專案**
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone <your-repo-url>
+cd stock-analysis-platform
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. **安裝前端依賴**
+```bash
+npm install
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+3. **設置 FinMind API Token**
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+在 `python/` 目錄下創建 `token` 檔案：
+```bash
+echo "YOUR_FINMIND_TOKEN" > python/token
+```
 
-## Learn More
+4. **安裝 Python 依賴**
+```bash
+cd python
+pip install -r requirements.txt
+cd ..
+```
 
-To learn more about Next.js, take a look at the following resources:
+5. **啟動開發伺服器**
+```bash
+npm run dev
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+開啟瀏覽器訪問 [http://localhost:3000](http://localhost:3000)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### 手動執行 Python 腳本（測試用）
 
-## Deploy on Vercel
+```bash
+cd python
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+# 執行股票綜合篩選
+python 股票綜合篩選.py
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+# 執行股東持有比例差
+python 股東持有比例差.py
+```
+
+執行後會在 `python/` 目錄產生 CSV 檔案，手動移動到 `data/latest/` 即可在網站上看到。
+
+## 📁 專案結構
+
+```
+stock-analysis-platform/
+├── .github/workflows/        # GitHub Actions 工作流程
+│   ├── comprehensive-screening.yml    # 股票綜合篩選 (18:00)
+│   └── shareholder-analysis.yml       # 股東持有比例差 (10:00)
+├── app/                      # Next.js App Router 頁面
+│   ├── page.tsx             # 首頁
+│   ├── foreign-investment/  # 外資大量買超
+│   ├── investment-trust/    # 投信連續買超
+│   ├── strong-stocks/       # 強勢股篩選
+│   ├── breakthrough/        # 盤整突破
+│   ├── category-stocks/     # 族群個股資料
+│   ├── category-ranking/    # 族群排名
+│   └── shareholder/         # 大戶持有比例差
+├── components/               # React 組件
+│   ├── Navigation.tsx       # 導航欄
+│   ├── DataTable.tsx        # 資料表格
+│   ├── StrategyPage.tsx     # 策略頁面模板
+│   └── ui/                  # UI 基礎組件
+├── data/                     # 資料目錄
+│   ├── latest/              # 最新資料 (7 個 CSV)
+│   └── history/             # 歷史資料 (依日期分類)
+├── python/                   # Python 腳本
+│   ├── 股票綜合篩選.py
+│   ├── 股東持有比例差.py
+│   ├── requirements.txt
+│   ├── (all)stock_info_list.csv
+│   ├── stock_category.csv
+│   └── token               # API Token (不提交到 Git)
+└── lib/                      # 工具函數
+    └── utils.ts
+```
+
+## ⚙️ GitHub Actions 設定
+
+### 設置 GitHub Secret
+
+1. 前往 GitHub Repository → Settings → Secrets and variables → Actions
+2. 新增 Secret: `FINMIND_TOKEN`
+3. 貼上您的 FinMind API Token
+
+### 執行時間
+
+- **股票綜合篩選**: 每日 18:00 (台北時間)
+  - Cron: `0 10 * * *` (UTC 10:00)
+- **股東持有比例差**: 每日 10:00 (台北時間)
+  - Cron: `0 2 * * *` (UTC 02:00)
+
+### 手動觸發
+
+前往 Actions 頁面，選擇對應的 Workflow，點擊 "Run workflow"
+
+## 🌐 部署到 Vercel
+
+### 方法一：透過 Vercel Dashboard
+
+1. 登入 [Vercel](https://vercel.com)
+2. Import GitHub Repository
+3. Framework Preset 選擇 **Next.js**
+4. 點擊 Deploy
+
+### 方法二：使用 Vercel CLI
+
+```bash
+npm i -g vercel
+vercel --prod
+```
+
+### Vercel 設定
+
+- **Framework**: Next.js
+- **Root Directory**: `./`
+- **Build Command**: `npm run build`
+- **Output Directory**: `.next`
+
+## 🛠️ 技術棧
+
+### 前端
+- **Framework**: Next.js 15 (App Router)
+- **UI**: Tailwind CSS
+- **Components**: Custom Card, Table 組件
+- **字體**: Noto Sans TC (中文優化)
+- **CSV 解析**: PapaParse
+
+### 後端 / 自動化
+- **執行環境**: GitHub Actions
+- **語言**: Python 3.11
+- **資料來源**: FinMind API
+- **資料處理**: Pandas, Requests
+
+### 部署
+- **平台**: Vercel
+- **CI/CD**: GitHub Actions → Vercel Auto Deploy
+
+## 📝 注意事項
+
+1. **API 限制**: FinMind API 有請求次數限制，建議使用付費方案
+2. **資料延遲**: 股東持股資料通常每週更新一次（週五）
+3. **執行時間**: GitHub Actions 可能有數分鐘的延遲
+4. **Token 安全**: 絕對不要將 `token` 檔案提交到 Git
+
+## 🐛 疑難排解
+
+### 問題：網站顯示「資料尚未準備」
+
+**解決方法**:
+1. 檢查 GitHub Actions 是否執行成功
+2. 確認 `data/latest/` 目錄有 CSV 檔案
+3. 檢查 CSV 檔名是否正確
+
+### 問題：Python 腳本執行失敗
+
+**解決方法**:
+1. 檢查 GitHub Secret `FINMIND_TOKEN` 是否設置正確
+2. 確認 Python 依賴已安裝
+3. 查看 Actions 日誌找出錯誤訊息
+
+### 問題：Vercel 部署失敗
+
+**解決方法**:
+1. 確認 `package.json` 的 dependencies 都已安裝
+2. 檢查 Next.js 版本相容性
+3. 查看 Vercel 部署日誌
+
+## 📜 授權
+
+MIT License
+
+## 🙏 致謝
+
+- 資料來源: [FinMind](https://finmindtrade.com/)
+- UI 設計靈感: Modern Dashboard Design
+
+## ⚠️ 免責聲明
+
+本平台僅提供資料篩選與分析功能，不構成任何投資建議。投資有風險，請謹慎評估並自行承擔投資決策責任。
+
+---
+
+**最後更新**: 2025-12-08

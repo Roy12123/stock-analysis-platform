@@ -39,3 +39,14 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# FinMind API Token (重要！不要提交)
+python/token
+token
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
