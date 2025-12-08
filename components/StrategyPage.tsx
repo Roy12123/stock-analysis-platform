@@ -41,7 +41,7 @@ export default function StrategyPage({ title, description, fileName, icon }: Str
             setLastUpdate(new Date().toLocaleString('zh-TW'))
             setLoading(false)
           },
-          error: (error) => {
+          error: (error: Error) => {
             setError(`解析 CSV 失敗: ${error.message}`)
             setLoading(false)
           }

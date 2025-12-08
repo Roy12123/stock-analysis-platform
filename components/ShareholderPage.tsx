@@ -37,7 +37,7 @@ export default function ShareholderPage() {
 
             setLoading(false)
           },
-          error: (error) => {
+          error: (error: Error) => {
             setError(`解析 CSV 失敗: ${error.message}`)
             setLoading(false)
           }
