@@ -31,18 +31,18 @@ const strategies = [
     color: 'bg-purple-50 border-purple-200',
   },
   {
-    name: '族群個股資料',
-    href: '/category-stocks',
-    icon: '📊',
-    description: '依族群分類的個股資料，包含今日漲跌幅、成交量等',
-    color: 'bg-yellow-50 border-yellow-200',
-  },
-  {
     name: '族群排名',
     href: '/category-ranking',
     icon: '🏆',
     description: '族群平均漲幅排名、上漲檔數、法人買賣超統計',
     color: 'bg-orange-50 border-orange-200',
+  },
+  {
+    name: '族群個股資料',
+    href: '/category-stocks',
+    icon: '📊',
+    description: '依族群分類的個股資料，包含今日漲跌幅、成交量等',
+    color: 'bg-yellow-50 border-yellow-200',
   },
   {
     name: '大戶持有比例差',

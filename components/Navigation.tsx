@@ -10,8 +10,8 @@ const strategies = [
   { name: '投信連續買超', href: '/investment-trust', icon: '🏦' },
   { name: '強勢股篩選', href: '/strong-stocks', icon: '📈' },
   { name: '盤整突破', href: '/breakthrough', icon: '🚀' },
-  { name: '族群個股資料', href: '/category-stocks', icon: '📊' },
   { name: '族群排名', href: '/category-ranking', icon: '🏆' },
+  { name: '族群個股資料', href: '/category-stocks', icon: '📊' },
   { name: '大戶持有比例差', href: '/shareholder', icon: '💎' },
 ]
 
