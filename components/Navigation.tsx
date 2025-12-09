@@ -19,22 +19,33 @@ export default function Navigation() {
   const pathname = usePathname()
 
   return (
-    <nav className="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
+    <nav className="bg-white/95 backdrop-blur-md border-b border-gray-200/80 sticky top-0 z-50 shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center">
-            <Link href="/" className="flex items-center gap-2">
-              <span className="text-2xl">📊</span>
-              <span className="text-xl font-bold text-gray-800">台股分析平台</span>
+            <Link href="/" className="flex items-center gap-3 group">
+              <span className="text-3xl transition-transform group-hover:scale-110">📊</span>
+              <div className="flex flex-col">
+                <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-cyan-500 bg-clip-text text-transparent">
+                  台股分析平台
+                </span>
+                <span className="text-xs text-gray-500">Stock Analysis Platform</span>
+              </div>
             </Link>
+          </div>
+          <div className="hidden md:flex items-center gap-4">
+            <div className="flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r from-blue-50 to-cyan-50 rounded-full border border-blue-200">
+              <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+              <span className="text-xs font-medium text-gray-700">每日更新 10:00 & 18:00</span>
+            </div>
           </div>
         </div>
       </div>
 
       {/* 水平選單 */}
-      <div className="border-t border-gray-200 bg-gray-50">
+      <div className="border-t border-gray-200/80 bg-gradient-to-r from-gray-50 to-blue-50/30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex overflow-x-auto hide-scrollbar">
+          <div className="flex overflow-x-auto hide-scrollbar gap-1">
             {strategies.map((strategy) => {
               const isActive = pathname === strategy.href
               return (
@@ -42,13 +53,13 @@ export default function Navigation() {
                   key={strategy.href}
                   href={strategy.href}
                   className={cn(
-                    'flex items-center gap-2 px-4 py-3 text-sm font-medium whitespace-nowrap border-b-2 transition-colors',
+                    'flex items-center gap-2 px-4 py-3 text-sm font-medium whitespace-nowrap border-b-2 transition-all duration-200 rounded-t-lg',
                     isActive
-                      ? 'border-blue-600 text-blue-600'
-                      : 'border-transparent text-gray-600 hover:text-gray-800 hover:border-gray-300'
+                      ? 'border-blue-600 text-blue-600 bg-white shadow-sm'
+                      : 'border-transparent text-gray-600 hover:text-blue-600 hover:bg-white/50 hover:border-blue-300'
                   )}
                 >
-                  <span>{strategy.icon}</span>
+                  <span className="text-base transition-transform hover:scale-110">{strategy.icon}</span>
                   <span>{strategy.name}</span>
                 </Link>
               )

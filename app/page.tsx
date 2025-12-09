@@ -57,61 +57,104 @@ export default function HomePage() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       {/* Hero Section */}
-      <div className="text-center mb-12">
-        <h1 className="text-4xl font-bold text-gray-900 mb-4">
-          台股分析平台
+      <div className="text-center mb-16 fade-in">
+        <div className="inline-block mb-6">
+          <div className="text-6xl mb-4 animate-bounce">📊</div>
+        </div>
+        <h1 className="text-5xl md:text-6xl font-extrabold mb-6">
+          <span className="bg-gradient-to-r from-blue-600 via-cyan-500 to-blue-600 bg-clip-text text-transparent">
+            台股分析平台
+          </span>
         </h1>
-        <p className="text-xl text-gray-600 mb-2">
+        <p className="text-xl md:text-2xl text-gray-600 mb-3 font-medium">
           自動化台股篩選分析系統
         </p>
-        <p className="text-sm text-gray-500">
-          每日自動更新 | 台北時間 10:00 & 18:00
-        </p>
+        <div className="flex items-center justify-center gap-2 text-sm text-gray-500">
+          <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-green-50 text-green-700 rounded-full border border-green-200">
+            <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+            每日自動更新
+          </span>
+          <span className="text-gray-400">|</span>
+          <span className="text-gray-600">台北時間 10:00 & 18:00</span>
+        </div>
       </div>
 
       {/* 系統說明 */}
-      <Card className="mb-12">
+      <Card className="mb-12 border-2 border-blue-100 shadow-lg bg-gradient-to-br from-white to-blue-50/30">
         <CardHeader>
-          <CardTitle>系統說明</CardTitle>
-          <CardDescription>
+          <CardTitle className="text-2xl flex items-center gap-2">
+            <span className="text-blue-600">⚙️</span>
+            系統說明
+          </CardTitle>
+          <CardDescription className="text-base">
             本平台透過 GitHub Actions 自動執行 Python 腳本，每日定時分析台股資料
           </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid md:grid-cols-2 gap-6">
-            <div>
-              <h3 className="font-semibold text-gray-900 mb-2">📊 股票綜合篩選</h3>
-              <p className="text-sm text-gray-600 mb-1">執行時間：每日 18:00 (台北時間)</p>
-              <p className="text-sm text-gray-500">
-                包含外資買超、投信買超、強勢股、盤整突破、族群分析等六種策略
-              </p>
+            <div className="p-5 bg-white rounded-xl border border-blue-100 shadow-sm hover:shadow-md transition-shadow">
+              <h3 className="font-bold text-gray-900 mb-3 text-lg flex items-center gap-2">
+                <span className="text-2xl">📊</span>
+                股票綜合篩選
+              </h3>
+              <div className="space-y-2">
+                <div className="flex items-center gap-2 text-sm">
+                  <span className="text-blue-600 font-semibold">⏰</span>
+                  <span className="text-gray-600">執行時間：每日 18:00 (台北時間)</span>
+                </div>
+                <p className="text-sm text-gray-500 leading-relaxed">
+                  包含外資買超、投信買超、強勢股、盤整突破、族群分析等六種策略
+                </p>
+              </div>
             </div>
-            <div>
-              <h3 className="font-semibold text-gray-900 mb-2">💎 股東持有比例差</h3>
-              <p className="text-sm text-gray-600 mb-1">執行時間：每日 10:00 (台北時間)</p>
-              <p className="text-sm text-gray-500">
-                分析大戶持股比例變化，追蹤主力資金動向
-              </p>
+            <div className="p-5 bg-white rounded-xl border border-indigo-100 shadow-sm hover:shadow-md transition-shadow">
+              <h3 className="font-bold text-gray-900 mb-3 text-lg flex items-center gap-2">
+                <span className="text-2xl">💎</span>
+                股東持有比例差
+              </h3>
+              <div className="space-y-2">
+                <div className="flex items-center gap-2 text-sm">
+                  <span className="text-blue-600 font-semibold">⏰</span>
+                  <span className="text-gray-600">執行時間：每日 10:00 (台北時間)</span>
+                </div>
+                <p className="text-sm text-gray-500 leading-relaxed">
+                  分析大戶持股比例變化，追蹤主力資金動向
+                </p>
+              </div>
             </div>
           </div>
         </CardContent>
       </Card>
 
       {/* 策略卡片 */}
-      <div className="mb-8">
-        <h2 className="text-2xl font-bold text-gray-900 mb-6">篩選策略</h2>
+      <div className="mb-12">
+        <div className="flex items-center gap-3 mb-8">
+          <h2 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent">
+            篩選策略
+          </h2>
+          <span className="px-3 py-1 bg-blue-100 text-blue-700 text-xs font-semibold rounded-full">
+            7 種策略
+          </span>
+        </div>
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {strategies.map((strategy) => (
+          {strategies.map((strategy, index) => (
             <Link key={strategy.href} href={strategy.href}>
-              <Card className={`h-full transition-all hover:shadow-lg hover:-translate-y-1 cursor-pointer ${strategy.color}`}>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <span className="text-2xl">{strategy.icon}</span>
-                    <span>{strategy.name}</span>
+              <Card
+                className={`h-full transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 cursor-pointer border-2 ${strategy.color} group relative overflow-hidden`}
+                style={{ animationDelay: `${index * 100}ms` }}
+              >
+                <div className="absolute top-0 right-0 w-20 h-20 bg-white/20 rounded-full -mr-10 -mt-10 group-hover:scale-150 transition-transform duration-500"></div>
+                <CardHeader className="relative z-10">
+                  <CardTitle className="flex items-center gap-3">
+                    <span className="text-3xl group-hover:scale-125 transition-transform duration-300">{strategy.icon}</span>
+                    <span className="group-hover:text-blue-700 transition-colors">{strategy.name}</span>
                   </CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-gray-700">{strategy.description}</p>
+                <CardContent className="relative z-10">
+                  <p className="text-sm text-gray-700 leading-relaxed">{strategy.description}</p>
+                  <div className="mt-4 flex items-center text-blue-600 text-sm font-medium group-hover:translate-x-2 transition-transform">
+                    查看詳情 →
+                  </div>
                 </CardContent>
               </Card>
             </Link>
@@ -120,30 +163,33 @@ export default function HomePage() {
       </div>
 
       {/* 功能特色 */}
-      <Card>
+      <Card className="border-2 border-gray-200 shadow-lg bg-gradient-to-br from-white via-gray-50 to-white">
         <CardHeader>
-          <CardTitle>功能特色</CardTitle>
+          <CardTitle className="text-2xl flex items-center gap-2">
+            <span className="text-yellow-500">✨</span>
+            功能特色
+          </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid md:grid-cols-3 gap-6">
-            <div>
-              <div className="text-2xl mb-2">⚡</div>
-              <h3 className="font-semibold mb-1">自動化執行</h3>
-              <p className="text-sm text-gray-600">
+          <div className="grid md:grid-cols-3 gap-8">
+            <div className="group p-6 rounded-2xl bg-gradient-to-br from-yellow-50 to-orange-50 border border-yellow-200 hover:shadow-xl transition-all duration-300">
+              <div className="text-4xl mb-4 group-hover:scale-110 transition-transform">⚡</div>
+              <h3 className="font-bold text-lg mb-2 text-gray-900">自動化執行</h3>
+              <p className="text-sm text-gray-600 leading-relaxed">
                 GitHub Actions 定時自動執行，無需手動操作
               </p>
             </div>
-            <div>
-              <div className="text-2xl mb-2">📈</div>
-              <h3 className="font-semibold mb-1">多維度分析</h3>
-              <p className="text-sm text-gray-600">
+            <div className="group p-6 rounded-2xl bg-gradient-to-br from-blue-50 to-cyan-50 border border-blue-200 hover:shadow-xl transition-all duration-300">
+              <div className="text-4xl mb-4 group-hover:scale-110 transition-transform">📈</div>
+              <h3 className="font-bold text-lg mb-2 text-gray-900">多維度分析</h3>
+              <p className="text-sm text-gray-600 leading-relaxed">
                 7種策略全方位分析台股，找出潛力標的
               </p>
             </div>
-            <div>
-              <div className="text-2xl mb-2">🔍</div>
-              <h3 className="font-semibold mb-1">即時搜尋篩選</h3>
-              <p className="text-sm text-gray-600">
+            <div className="group p-6 rounded-2xl bg-gradient-to-br from-green-50 to-emerald-50 border border-green-200 hover:shadow-xl transition-all duration-300">
+              <div className="text-4xl mb-4 group-hover:scale-110 transition-transform">🔍</div>
+              <h3 className="font-bold text-lg mb-2 text-gray-900">即時搜尋篩選</h3>
+              <p className="text-sm text-gray-600 leading-relaxed">
                 支援關鍵字搜尋、欄位排序、分頁瀏覽
               </p>
             </div>
@@ -152,11 +198,16 @@ export default function HomePage() {
       </Card>
 
       {/* 注意事項 */}
-      <div className="mt-12 p-6 bg-yellow-50 border border-yellow-200 rounded-lg">
-        <h3 className="font-semibold text-yellow-900 mb-2">⚠️ 免責聲明</h3>
-        <p className="text-sm text-yellow-800">
-          本平台僅提供資料篩選與分析功能，不構成任何投資建議。投資有風險，請謹慎評估並自行承擔投資決策責任。
-        </p>
+      <div className="mt-12 p-8 bg-gradient-to-r from-yellow-50 via-orange-50 to-yellow-50 border-2 border-yellow-300 rounded-2xl shadow-lg">
+        <div className="flex items-start gap-4">
+          <div className="text-4xl">⚠️</div>
+          <div className="flex-1">
+            <h3 className="font-bold text-yellow-900 mb-3 text-lg">免責聲明</h3>
+            <p className="text-sm text-yellow-800 leading-relaxed">
+              本平台僅提供資料篩選與分析功能，不構成任何投資建議。投資有風險，請謹慎評估並自行承擔投資決策責任。
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   )
