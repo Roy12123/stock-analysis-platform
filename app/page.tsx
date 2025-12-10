@@ -1,5 +1,8 @@
+'use client'
+
 import Link from 'next/link'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { useLastUpdate } from '@/hooks/useLastUpdate'
 
 const strategies = [
   {
@@ -54,6 +57,8 @@ const strategies = [
 ]
 
 export default function HomePage() {
+  const { updateData, loading } = useLastUpdate()
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       {/* Hero Section */}
@@ -69,13 +74,20 @@ export default function HomePage() {
         <p className="text-xl md:text-2xl text-gray-600 mb-3 font-medium">
           自動化台股篩選分析系統
         </p>
-        <div className="flex items-center justify-center gap-2 text-sm text-gray-500">
-          <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-green-50 text-green-700 rounded-full border border-green-200">
-            <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-            每日自動更新
-          </span>
-          <span className="text-gray-400">|</span>
-          <span className="text-gray-600">台北時間 10:00 & 18:00</span>
+        <div className="flex flex-col items-center justify-center gap-2 text-sm text-gray-500">
+          <div className="flex items-center gap-2">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-green-50 text-green-700 rounded-full border border-green-200">
+              <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+              自動更新時間
+            </span>
+            <span className="text-gray-400">|</span>
+            <span className="text-gray-600">台北時間 10:00 & 18:00</span>
+          </div>
+          {!loading && updateData?.stock_analysis && (
+            <div className="text-xs text-gray-500">
+              最後更新：{updateData.stock_analysis.updated_at} (資料日期: {updateData.stock_analysis.trade_date})
+            </div>
+          )}
         </div>
       </div>
 

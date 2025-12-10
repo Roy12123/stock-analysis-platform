@@ -1,0 +1,13 @@
+{
+  "stock_analysis": {
+    "updated_at": "2024-12-09 18:00:00",
+    "trade_date": "2024-12-09",
+    "timezone": "Asia/Taipei"
+  },
+  "shareholder": {
+    "updated_at": "2024-12-09 10:00:00",
+    "start_date": "2024-11-25",
+    "end_date": "2024-12-02",
+    "timezone": "Asia/Taipei"
+  }
+}

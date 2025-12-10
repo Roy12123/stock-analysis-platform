@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
+import { useLastUpdate } from '@/hooks/useLastUpdate'
 
 const strategies = [
   { name: '首頁', href: '/', icon: '🏠' },
@@ -17,6 +18,7 @@ const strategies = [
 
 export default function Navigation() {
   const pathname = usePathname()
+  const { updateData, loading } = useLastUpdate()
 
   return (
     <nav className="bg-white/95 backdrop-blur-md border-b border-gray-200/80 sticky top-0 z-50 shadow-sm">
@@ -34,9 +36,16 @@ export default function Navigation() {
             </Link>
           </div>
           <div className="hidden md:flex items-center gap-4">
-            <div className="flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r from-blue-50 to-cyan-50 rounded-full border border-blue-200">
-              <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-              <span className="text-xs font-medium text-gray-700">每日更新 10:00 & 18:00</span>
+            <div className="flex flex-col items-end gap-0.5">
+              <div className="flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r from-blue-50 to-cyan-50 rounded-full border border-blue-200">
+                <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                <span className="text-xs font-medium text-gray-700">每日更新 10:00 & 18:00</span>
+              </div>
+              {!loading && updateData?.stock_analysis && (
+                <span className="text-xs text-gray-500 px-2">
+                  最後更新: {updateData.stock_analysis.updated_at.split(' ')[0]} {updateData.stock_analysis.updated_at.split(' ')[1]}
+                </span>
+              )}
             </div>
           </div>
         </div>
