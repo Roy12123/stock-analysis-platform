@@ -6,6 +6,14 @@ import { useLastUpdate } from '@/hooks/useLastUpdate'
 
 const strategies = [
   {
+    name: '隔日衝策略',
+    href: '/daily-rush',
+    icon: '🚀',
+    description: '紅K棒+實體>前日1.5倍+量>5日均量2倍+收在高點+大量能',
+    color: 'bg-red-50 border-red-200',
+    badge: '每日13:20更新',
+  },
+  {
     name: '外資大量買超',
     href: '/foreign-investment',
     icon: '🌐',
@@ -29,7 +37,7 @@ const strategies = [
   {
     name: '盤整突破',
     href: '/breakthrough',
-    icon: '🚀',
+    icon: '🔥',
     description: '成交量>20MA的5倍、成交量>5000張、近3個交易日內突破',
     color: 'bg-purple-50 border-purple-200',
   },
@@ -103,7 +111,22 @@ export default function HomePage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid md:grid-cols-2 gap-6">
+          <div className="grid md:grid-cols-3 gap-6">
+            <div className="p-5 bg-white rounded-xl border border-red-100 shadow-sm hover:shadow-md transition-shadow">
+              <h3 className="font-bold text-gray-900 mb-3 text-lg flex items-center gap-2">
+                <span className="text-2xl">🚀</span>
+                隔日衝策略
+              </h3>
+              <div className="space-y-2">
+                <div className="flex items-center gap-2 text-sm">
+                  <span className="text-red-600 font-semibold">⏰</span>
+                  <span className="text-gray-600">每日 07:00 & 13:20 (台北時間)</span>
+                </div>
+                <p className="text-sm text-gray-500 leading-relaxed">
+                  篩選強勢爆量股票，適合短線操作
+                </p>
+              </div>
+            </div>
             <div className="p-5 bg-white rounded-xl border border-blue-100 shadow-sm hover:shadow-md transition-shadow">
               <h3 className="font-bold text-gray-900 mb-3 text-lg flex items-center gap-2">
                 <span className="text-2xl">📊</span>
@@ -145,7 +168,7 @@ export default function HomePage() {
             篩選策略
           </h2>
           <span className="px-3 py-1 bg-blue-100 text-blue-700 text-xs font-semibold rounded-full">
-            7 種策略
+            8 種策略
           </span>
         </div>
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -159,7 +182,14 @@ export default function HomePage() {
                 <CardHeader className="relative z-10">
                   <CardTitle className="flex items-center gap-3">
                     <span className="text-3xl group-hover:scale-125 transition-transform duration-300">{strategy.icon}</span>
-                    <span className="group-hover:text-blue-700 transition-colors">{strategy.name}</span>
+                    <div className="flex flex-col gap-1">
+                      <span className="group-hover:text-blue-700 transition-colors">{strategy.name}</span>
+                      {strategy.badge && (
+                        <span className="text-xs bg-red-500 text-white px-2 py-0.5 rounded-full w-fit">
+                          {strategy.badge}
+                        </span>
+                      )}
+                    </div>
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="relative z-10">
@@ -195,7 +225,7 @@ export default function HomePage() {
               <div className="text-4xl mb-4 group-hover:scale-110 transition-transform">📈</div>
               <h3 className="font-bold text-lg mb-2 text-gray-900">多維度分析</h3>
               <p className="text-sm text-gray-600 leading-relaxed">
-                7種策略全方位分析台股，找出潛力標的
+                8種策略全方位分析台股，找出潛力標的
               </p>
             </div>
             <div className="group p-6 rounded-2xl bg-gradient-to-br from-green-50 to-emerald-50 border border-green-200 hover:shadow-xl transition-all duration-300">
