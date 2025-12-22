@@ -1,8 +1,8 @@
-name: 隔日衝策略 - 階段2 (每日 15:00 台北時間)
+name: 隔日衝策略 - 階段2 (每日 13:20 台北時間)
 
 on:
   schedule:
-    - cron: '0 7 * * *'  # UTC 07:00 = 台北 15:00
+    - cron: '20 5 * * *'  # UTC 05:20 = 台北 13:20
   workflow_dispatch:  # 允許手動觸發
 
 permissions:
