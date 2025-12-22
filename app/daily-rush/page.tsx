@@ -20,23 +20,42 @@ export default function DailyRushPage() {
   const [error, setError] = useState<string>('');
 
   useEffect(() => {
-    fetch('/api/daily-rush')
-      .then(res => res.json())
-      .then(result => {
-        if (result.success) {
-          setData(result.data || []);
-          setUpdateTime(result.updateTime || '');
-          setError('');
-        } else {
-          setError(result.error || '無法載入資料');
-          setData([]);
+    async function loadData() {
+      try {
+        setLoading(true);
+        setError('');
+
+        const timestamp = new Date().getTime();
+        const response = await fetch(`https://raw.githubusercontent.com/Roy12123/stock-analysis-platform/main/data/latest/隔日衝_篩選結果.csv?t=${timestamp}`);
+
+        if (!response.ok) {
+          throw new Error('篩選結果尚未產生，請等待今日 13:20 後再查看');
         }
+
+        const csvText = await response.text();
+
+        const Papa = (await import('papaparse')).default;
+        Papa.parse(csvText, {
+          header: true,
+          skipEmptyLines: true,
+          dynamicTyping: true,
+          complete: (results) => {
+            setData(results.data as StockData[]);
+            setUpdateTime(new Date().toLocaleString('zh-TW'));
+            setLoading(false);
+          },
+          error: (error: Error) => {
+            setError(`解析 CSV 失敗: ${error.message}`);
+            setLoading(false);
+          }
+        });
+      } catch (err) {
+        setError(err instanceof Error ? err.message : '載入資料失敗');
         setLoading(false);
-      })
-      .catch(err => {
-        setError('無法連接到伺服器');
-        setLoading(false);
-      });
+      }
+    }
+
+    loadData();
   }, []);
 
   if (loading) {
