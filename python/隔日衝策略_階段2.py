@@ -46,7 +46,8 @@ def realtime_screen(token):
 
     # 讀取歷史資料
     print("\n[1/3] 讀取歷史資料...")
-    historical_file = '../data/latest/隔日衝_歷史資料.csv'
+    # 支援從 python/ 目錄或根目錄執行
+    historical_file = '../data/latest/隔日衝_歷史資料.csv' if os.path.exists('../data/latest/隔日衝_歷史資料.csv') else 'data/latest/隔日衝_歷史資料.csv'
 
     try:
         df_historical = pd.read_csv(historical_file)
@@ -236,8 +237,8 @@ def realtime_screen(token):
 
         df_output = df_output.sort_values('當下漲跌幅(%)', ascending=False)
 
-        # 儲存到 data/latest 目錄
-        output_file = '../data/latest/隔日衝_篩選結果.csv'
+        # 儲存到 data/latest 目錄（支援從 python/ 或根目錄執行）
+        output_file = '../data/latest/隔日衝_篩選結果.csv' if os.path.exists('../data/latest') else 'data/latest/隔日衝_篩選結果.csv'
         os.makedirs(os.path.dirname(output_file), exist_ok=True)
         df_output.to_csv(output_file, index=False, encoding='utf-8-sig')
 
@@ -255,7 +256,7 @@ def realtime_screen(token):
             '外資昨日買超(張)', '外資前三日總買超(張)',
             '投信昨日買超(張)', '投信前三日總買超(張)'
         ])
-        output_file = '../data/latest/隔日衝_篩選結果.csv'
+        output_file = '../data/latest/隔日衝_篩選結果.csv' if os.path.exists('../data/latest') else 'data/latest/隔日衝_篩選結果.csv'
         os.makedirs(os.path.dirname(output_file), exist_ok=True)
         df_empty.to_csv(output_file, index=False, encoding='utf-8-sig')
         print(f"✅ 空結果已儲存至: {output_file}")

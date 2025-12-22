@@ -260,8 +260,8 @@ def prepare_historical_data(token):
         'trust_yesterday', 'trust_3days'
     ]]
 
-    # 儲存到 data/latest 目錄
-    output_file = '../data/latest/隔日衝_歷史資料.csv'
+    # 儲存到 data/latest 目錄（支援從 python/ 或根目錄執行）
+    output_file = '../data/latest/隔日衝_歷史資料.csv' if os.path.exists('../data/latest') else 'data/latest/隔日衝_歷史資料.csv'
     os.makedirs(os.path.dirname(output_file), exist_ok=True)
     df_output.to_csv(output_file, index=False, encoding='utf-8-sig')
 
