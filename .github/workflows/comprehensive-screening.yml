@@ -57,6 +57,11 @@ jobs:
           echo "=== 歷史資料 ==="
           ls -lh data/history/$(date +%Y-%m-%d)/
 
+      - name: 執行多策略交集分析
+        run: |
+          cd python
+          python 多策略交集分析.py
+
       - name: 提交變更到 GitHub
         run: |
           git config user.name "GitHub Actions Bot"

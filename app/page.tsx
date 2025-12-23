@@ -1,8 +1,11 @@
 'use client'
 
 import Link from 'next/link'
+import { useEffect, useState } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { useLastUpdate } from '@/hooks/useLastUpdate'
+import MultiStrategyTable from '@/components/MultiStrategyTable'
+import Papa from 'papaparse'
 
 const strategies = [
   {
@@ -66,6 +69,37 @@ const strategies = [
 
 export default function HomePage() {
   const { updateData, loading } = useLastUpdate()
+  const [multiStrategyData, setMultiStrategyData] = useState<any[]>([])
+  const [multiStrategyLoading, setMultiStrategyLoading] = useState(true)
+
+  // 載入多策略交集資料
+  useEffect(() => {
+    async function loadMultiStrategyData() {
+      try {
+        const timestamp = new Date().getTime()
+        const response = await fetch(`https://raw.githubusercontent.com/Roy12123/stock-analysis-platform/main/data/latest/多策略交集.csv?t=${timestamp}`)
+
+        if (response.ok) {
+          const csvText = await response.text()
+          Papa.parse(csvText, {
+            header: true,
+            skipEmptyLines: true,
+            dynamicTyping: true,
+            complete: (results) => {
+              setMultiStrategyData(results.data)
+              setMultiStrategyLoading(false)
+            },
+          })
+        } else {
+          setMultiStrategyLoading(false)
+        }
+      } catch (err) {
+        setMultiStrategyLoading(false)
+      }
+    }
+
+    loadMultiStrategyData()
+  }, [])
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -158,6 +192,29 @@ export default function HomePage() {
               </div>
             </div>
           </div>
+        </CardContent>
+      </Card>
+
+      {/* 多策略交集 */}
+      <Card className="mb-12 border-2 border-purple-100 shadow-lg bg-gradient-to-br from-white to-purple-50/30">
+        <CardHeader>
+          <CardTitle className="text-2xl flex items-center gap-2">
+            <span className="text-purple-600">🎯</span>
+            多策略交集分析
+          </CardTitle>
+          <CardDescription className="text-base">
+            同時被至少 3 個策略篩選出來的股票，具有更高的關注價值
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          {multiStrategyLoading ? (
+            <div className="text-center py-12">
+              <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mb-4"></div>
+              <p className="text-gray-600">載入中...</p>
+            </div>
+          ) : (
+            <MultiStrategyTable data={multiStrategyData} />
+          )}
         </CardContent>
       </Card>
 
