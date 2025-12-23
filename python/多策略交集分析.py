@@ -61,21 +61,24 @@ def analyze_intersections(strategies, min_strategies=2):
                 stock_strategies[stock_id] = {
                     '股票代碼': stock_id,
                     '公司名稱': company_name,
-                    '符合策略': []
+                    '符合策略': set()  # 使用 set 避免重複
                 }
 
-            stock_strategies[stock_id]['符合策略'].append(strategy_name)
+            # 只加入策略名稱一次（set 會自動去重）
+            stock_strategies[stock_id]['符合策略'].add(strategy_name)
 
     # 篩選出符合至少 min_strategies 個策略的股票
     result = []
     for stock_id, info in stock_strategies.items():
         strategy_count = len(info['符合策略'])
         if strategy_count >= min_strategies:
+            # 將 set 轉換為排序後的列表，確保顯示順序一致
+            strategies_list = sorted(list(info['符合策略']))
             result.append({
                 '股票代碼': info['股票代碼'],
                 '公司名稱': info['公司名稱'],
                 '符合策略數': strategy_count,
-                '符合策略': ', '.join(info['符合策略'])
+                '符合策略': ', '.join(strategies_list)
             })
 
     # 按符合策略數排序（由多到少）
