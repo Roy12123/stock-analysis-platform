@@ -45,7 +45,7 @@ def load_strategy_data():
 
     return strategies
 
-def analyze_intersections(strategies, min_strategies=3):
+def analyze_intersections(strategies, min_strategies=2):
     """分析策略交集"""
     print(f"\n開始分析交集（至少符合 {min_strategies} 個策略）...")
 
@@ -98,10 +98,10 @@ def main():
 
     print(f"\n總共載入 {len(strategies)} 個策略")
 
-    # 分析交集（至少3個策略）
-    result = analyze_intersections(strategies, min_strategies=3)
+    # 分析交集（至少2個策略）
+    result = analyze_intersections(strategies, min_strategies=2)
 
-    print(f"\n🎯 找到 {len(result)} 檔股票符合至少3個策略\n")
+    print(f"\n🎯 找到 {len(result)} 檔股票符合至少2個策略\n")
 
     if len(result) > 0:
         # 建立 DataFrame
@@ -122,7 +122,7 @@ def main():
         print(df_result.to_string(index=False))
         print("=" * 80)
     else:
-        print("⚠️  目前沒有股票同時符合3個以上策略")
+        print("⚠️  目前沒有股票同時符合2個以上策略")
 
         # 建立空檔案
         df_empty = pd.DataFrame(columns=['股票代碼', '公司名稱', '符合策略數', '符合策略'])

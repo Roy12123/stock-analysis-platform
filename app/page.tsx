@@ -203,7 +203,7 @@ export default function HomePage() {
             多策略交集分析
           </CardTitle>
           <CardDescription className="text-base">
-            同時被至少 3 個策略篩選出來的股票，具有更高的關注價值
+            同時被至少 2 個策略篩選出來的股票，具有更高的關注價值
           </CardDescription>
         </CardHeader>
         <CardContent>

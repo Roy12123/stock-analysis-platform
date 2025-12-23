@@ -79,7 +79,7 @@ export default function MultiStrategyTable({ data }: MultiStrategyTableProps) {
     return (
       <div className="text-center py-12">
         <div className="text-6xl mb-4">🔍</div>
-        <p className="text-gray-500 text-lg">目前沒有股票同時符合3個以上策略</p>
+        <p className="text-gray-500 text-lg">目前沒有股票同時符合2個以上策略</p>
         <p className="text-gray-400 text-sm mt-2">資料將在每日 18:30 自動更新</p>
       </div>
     )
@@ -88,7 +88,7 @@ export default function MultiStrategyTable({ data }: MultiStrategyTableProps) {
   return (
     <div className="space-y-4">
       <div className="text-sm text-gray-600">
-        共 {data.length} 檔股票符合至少 3 個策略
+        共 {data.length} 檔股票符合至少 2 個策略
       </div>
 
       <div className="overflow-x-auto border border-gray-200 rounded-lg">
