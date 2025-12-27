@@ -23,7 +23,10 @@ class TWSEAttentionStockCrawler:
 
         # 讀取有效股票代碼清單
         self.valid_stocks = self._load_valid_stocks(stock_list_path)
-        print(f"已載入 {len(self.valid_stocks)} 檔有效股票")
+        if self.valid_stocks:
+            print(f"已載入 {len(self.valid_stocks)} 檔有效股票")
+        else:
+            print("未載入股票清單，將顯示所有注意股票")
 
         # 設定 headers 避免被擋
         self.headers = {
@@ -32,14 +35,17 @@ class TWSEAttentionStockCrawler:
 
     def _load_valid_stocks(self, file_path):
         """載入有效股票代碼清單"""
+        if not file_path:
+            return None
+
         try:
             df = pd.read_csv(file_path, encoding='utf-8-sig')
             # 將股票代碼轉為字串格式，並去除可能的空白
             stock_codes = df['股票代碼'].astype(str).str.strip().tolist()
             return set(stock_codes)
         except Exception as e:
-            print(f"讀取股票清單失敗: {e}")
-            return set()
+            print(f"讀取股票清單失敗: {e}，將顯示所有注意股票")
+            return None
 
     def fetch_attention_stocks(self, start_date=None, end_date=None):
         """
@@ -93,10 +99,12 @@ class TWSEAttentionStockCrawler:
 
             print(f"原始資料共 {len(df)} 筆")
 
-            # 過濾：只保留在 valid_stocks 清單中的股票
-            df = df[df['證券代號'].isin(self.valid_stocks)]
-
-            print(f"過濾後剩餘 {len(df)} 筆（在股票清單中）")
+            # 過濾：只保留在 valid_stocks 清單中的股票（如果有清單的話）
+            if self.valid_stocks:
+                df = df[df['證券代號'].isin(self.valid_stocks)]
+                print(f"過濾後剩餘 {len(df)} 筆（在股票清單中）")
+            else:
+                print(f"未過濾，保留所有 {len(df)} 筆資料")
 
             # 新增查詢日期欄位
             df['查詢起始日'] = start_date

@@ -27,25 +27,8 @@ def main():
     print("\n【步驟1】爬取最新注意股票公告...")
     print("-"*80)
 
-    # 初始化爬蟲（自動偵測股票清單路徑）
-    stock_list_paths = [
-        '../(all)stock_info_list.csv',  # 從 python/ 執行
-        '(all)stock_info_list.csv',     # 從根目錄執行
-        '../stock_category.csv',        # 使用 stock_category.csv
-        'stock_category.csv'
-    ]
-
-    stock_list_path = None
-    for path in stock_list_paths:
-        if os.path.exists(path):
-            stock_list_path = path
-            break
-
-    if not stock_list_path:
-        print("⚠️ 找不到股票清單檔案，使用預設爬蟲")
-        # 使用空路徑會導致爬蟲不過濾
-
-    crawler = TWSEAttentionStockCrawler(stock_list_path) if stock_list_path else TWSEAttentionStockCrawler()
+    # 初始化爬蟲（不過濾股票清單，顯示所有注意股票）
+    crawler = TWSEAttentionStockCrawler(stock_list_path=None)
 
     # 爬取最近30天的資料（確保有足夠的歷史記錄）
     end_date = datetime.now()
