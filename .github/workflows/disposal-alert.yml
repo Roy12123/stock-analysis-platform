@@ -1,0 +1,56 @@
+name: 處置注意股預警 (每日 19:00 台北時間)
+
+on:
+  schedule:
+    - cron: '0 11 * * *'  # UTC 11:00 = 台北 19:00
+  workflow_dispatch:  # 允許手動觸發
+
+permissions:
+  contents: write  # 允許推送到 repository
+
+jobs:
+  run-disposal-alert:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 檢出代碼
+        uses: actions/checkout@v4
+
+      - name: 設置 Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: 安裝 Python 依賴
+        run: |
+          cd python
+          pip install -r requirements.txt
+
+      - name: 執行處置注意股預警分析
+        env:
+          FINMIND_TOKEN: ${{ secrets.FINMIND_TOKEN }}
+        run: |
+          cd python
+          python daily_disposal_alert.py
+
+      - name: 檢查結果
+        run: |
+          if [ -f "data/latest/處置注意股.csv" ]; then
+            echo "=== 處置注意股預警結果 ==="
+            ls -lh data/latest/處置注意股.csv
+            echo "=== 風險股票數量 ==="
+            tail -n +2 data/latest/處置注意股.csv | wc -l
+            echo "=== 前10筆資料預覽 ==="
+            head -11 data/latest/處置注意股.csv
+          else
+            echo "⚠️ 處置注意股.csv 未生成"
+          fi
+
+      - name: 提交變更到 GitHub
+        run: |
+          git config user.name "GitHub Actions Bot"
+          git config user.email "actions@github.com"
+          git add data/latest/處置注意股.csv
+          git diff --staged --quiet || git commit -m "⚠️ 處置注意股預警更新 - $(TZ='Asia/Taipei' date +'%Y-%m-%d %H:%M')"
+          git push || echo "沒有變更需要推送"
