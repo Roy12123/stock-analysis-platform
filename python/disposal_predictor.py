@@ -55,7 +55,8 @@ class DisposalPredictor:
                 'days_in_10': 近10天內天數,
                 'days_in_30': 近30天內天數,
                 'will_dispose': 是否即將被處置,
-                'dispose_reason': 處置原因
+                'dispose_reason': 處置原因,
+                'stock_name': 證券名稱
             }
         """
         # 過濾出該股票的記錄（轉成整數比較）
@@ -73,8 +74,12 @@ class DisposalPredictor:
                 'days_in_10': 0,
                 'days_in_30': 0,
                 'will_dispose': False,
-                'dispose_reason': None
+                'dispose_reason': None,
+                'stock_name': '未知'
             }
+
+        # 取得證券名稱（從第一筆記錄）
+        stock_name = stock_records.iloc[0].get('證券名稱', '未知') if '證券名稱' in stock_records.columns else '未知'
 
         # 解析日期（民國年轉西元年）
         def roc_to_ad(roc_date):
@@ -130,7 +135,8 @@ class DisposalPredictor:
             'days_in_10': days_in_10,
             'days_in_30': days_in_30,
             'will_dispose': will_dispose,
-            'dispose_reason': dispose_reason
+            'dispose_reason': dispose_reason,
+            'stock_name': stock_name
         }
 
     def _count_consecutive_days(self, dates_list):
@@ -293,7 +299,7 @@ class DisposalPredictor:
                 if thresholds:
                     predictions.append({
                         '證券代號': stock_id,
-                        '證券名稱': thresholds['stock_name'],
+                        '證券名稱': analysis['stock_name'],  # 使用 analysis 中的證券名稱
                         '最新收盤價': thresholds['latest_close'],
                         '累計注意股次數': analysis['total_days'],
                         '連續天數': analysis['consecutive_days'],
