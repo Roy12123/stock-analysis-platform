@@ -7,18 +7,30 @@ import requests
 import pandas as pd
 from datetime import datetime, timedelta
 import time
+import os
 
 
 class StockDataFetcher:
-    def __init__(self, token_file='FinMind_API/token'):
+    def __init__(self, token_file=None):
         """
         初始化股價資料取得器
 
         Args:
-            token_file: FinMind API token 檔案路徑
+            token_file: FinMind API token 檔案路徑（可選，優先使用環境變數）
         """
-        with open(token_file, 'r') as f:
-            self.token = f.read().strip()
+        # 優先使用環境變數
+        self.token = os.getenv('FINMIND_TOKEN')
+
+        # 如果環境變數不存在，嘗試從檔案讀取
+        if not self.token and token_file:
+            try:
+                with open(token_file, 'r') as f:
+                    self.token = f.read().strip()
+            except FileNotFoundError:
+                print(f"⚠️ Token 檔案不存在: {token_file}")
+
+        if not self.token:
+            raise ValueError("無法取得 FinMind API token（請設定環境變數 FINMIND_TOKEN 或提供 token_file）")
 
         self.base_url = "https://api.finmindtrade.com/api/v4/data"
         self.headers = {"Authorization": f"Bearer {self.token}"}
