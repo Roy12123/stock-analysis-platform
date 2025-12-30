@@ -244,8 +244,15 @@ export default function DisposalAlertTable({ data }: DisposalAlertTableProps) {
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                   #{idx + 1}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                  {row.股票代碼}
+                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                  <a
+                    href={`https://goodinfo.tw/tw/ShowK_Chart.asp?STOCK_ID=${row.股票代碼}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 hover:text-blue-800 hover:underline"
+                  >
+                    {row.股票代碼}
+                  </a>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                   {row.公司名稱}

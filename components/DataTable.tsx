@@ -68,6 +68,21 @@ export default function DataTable({ data, title, description }: DataTableProps) 
   const formatCellValue = (key: string, value: string | number) => {
     const strValue = String(value)
 
+    // 股票代碼 - 加上 Goodinfo 超連結
+    if (key === '股票代碼' && strValue) {
+      const stockId = strValue.trim()
+      return (
+        <a
+          href={`https://goodinfo.tw/tw/ShowK_Chart.asp?STOCK_ID=${stockId}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-blue-600 hover:text-blue-800 hover:underline font-medium"
+        >
+          {stockId}
+        </a>
+      )
+    }
+
     // 百分比
     if (strValue.includes('%') || key.includes('漲跌') || key.includes('漲幅') || key.includes('波動')) {
       const numValue = parseFloat(strValue.replace(/[^0-9.-]/g, ''))
