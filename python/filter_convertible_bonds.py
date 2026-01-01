@@ -350,14 +350,21 @@ def filter_convertible_bonds():
     result_df = result_df.drop('abs_diff', axis=1)
 
     # 匯出結果到 public/data/latest 目錄
-    output_file = '../public/data/latest/可轉債篩選.csv' if os.path.exists('../public/data/latest') else 'public/data/latest/可轉債篩選.csv'
-    os.makedirs(os.path.dirname(output_file), exist_ok=True)
-    result_df.to_csv(output_file, index=False, encoding='utf-8-sig')
+    output_file_latest = '../public/data/latest/可轉債篩選.csv' if os.path.exists('../public/data/latest') else 'public/data/latest/可轉債篩選.csv'
+    os.makedirs(os.path.dirname(output_file_latest), exist_ok=True)
+    result_df.to_csv(output_file_latest, index=False, encoding='utf-8-sig')
+
+    # 同時匯出到 history 目錄（以日期命名）
+    history_date = trading_date.replace('-', '')
+    output_file_history = f'../public/data/history/{history_date}/可轉債篩選.csv' if os.path.exists('../public/data/history') else f'public/data/history/{history_date}/可轉債篩選.csv'
+    os.makedirs(os.path.dirname(output_file_history), exist_ok=True)
+    result_df.to_csv(output_file_history, index=False, encoding='utf-8-sig')
 
     print("\n" + "=" * 70)
     print("篩選完成！")
     print("=" * 70)
-    print(f"\n輸出檔案: {output_file}")
+    print(f"\n最新資料: {output_file_latest}")
+    print(f"歷史資料: {output_file_history}")
     print(f"交易日期: {trading_date}")
     print(f"符合條件: {len(result_df)} 檔可轉債")
 
