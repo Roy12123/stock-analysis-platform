@@ -31,7 +31,7 @@ export default function ConvertibleBondsPage() {
             setData(processedData)
             setLoading(false)
           },
-          error: (error) => {
+          error: (error: Error) => {
             console.error('CSV parsing error:', error)
             setError('無法載入資料')
             setLoading(false)
