@@ -1,0 +1,71 @@
+name: 股票綜合篩選 (每日 18:00 台北時間)
+
+on:
+  schedule:
+    - cron: '0 10 * * *'  # UTC 10:00 = 台北 18:00
+  workflow_dispatch:  # 允許手動觸發
+
+permissions:
+  contents: write  # 允許推送到 repository
+
+jobs:
+  run-screening:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 檢出代碼
+        uses: actions/checkout@v4
+
+      - name: 設置 Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: 安裝 Python 依賴
+        run: |
+          cd python
+          pip install -r requirements.txt
+
+      - name: 執行股票綜合篩選
+        env:
+          FINMIND_TOKEN: ${{ secrets.FINMIND_TOKEN }}
+        run: |
+          cd python
+          python 股票綜合篩選.py
+
+      - name: 整理資料檔案
+        run: |
+          # 確保目錄存在
+          mkdir -p data/latest
+          mkdir -p data/history/$(date +%Y-%m-%d)
+
+          # 移動最新資料到 latest 目錄
+          find python -name "*_外資大量買超.csv" -exec mv {} data/latest/外資大量買超.csv \; || true
+          find python -name "*_投信連續買超.csv" -exec mv {} data/latest/投信連續買超.csv \; || true
+          find python -name "*_強勢股篩選.csv" -exec mv {} data/latest/強勢股篩選.csv \; || true
+          find python -name "*_盤整突破.csv" -exec mv {} data/latest/盤整突破.csv \; || true
+          find python -name "*_族群個股資料.csv" -exec mv {} data/latest/族群個股資料.csv \; || true
+          find python -name "*_族群排名.csv" -exec mv {} data/latest/族群排名.csv \; || true
+
+          # 複製到歷史資料目錄
+          cp data/latest/*.csv data/history/$(date +%Y-%m-%d)/ || true
+
+          # 顯示檔案清單
+          echo "=== 最新資料 ==="
+          ls -lh data/latest/
+          echo "=== 歷史資料 ==="
+          ls -lh data/history/$(date +%Y-%m-%d)/
+
+      - name: 執行多策略交集分析
+        run: |
+          cd python
+          python 多策略交集分析.py
+
+      - name: 提交變更到 GitHub
+        run: |
+          git config user.name "GitHub Actions Bot"
+          git config user.email "actions@github.com"
+          git add data/
+          git diff --staged --quiet || git commit -m "📊 更新股票綜合篩選資料 - $(date +'%Y-%m-%d %H:%M') (台北時間: $(TZ='Asia/Taipei' date +'%Y-%m-%d %H:%M'))"
+          git push || echo "沒有變更需要推送"

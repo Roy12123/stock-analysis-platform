@@ -1,0 +1,52 @@
+name: 多策略交集分析 (每日 18:30 台北時間)
+
+on:
+  schedule:
+    - cron: '30 10 * * *'  # UTC 10:30 = 台北 18:30
+  workflow_dispatch:  # 允許手動觸發
+
+permissions:
+  contents: write
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 檢出代碼
+        uses: actions/checkout@v4
+
+      - name: 設置 Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: 安裝 Python 依賴
+        run: |
+          cd python
+          pip install -r requirements.txt
+
+      - name: 執行多策略交集分析
+        run: |
+          cd python
+          python 多策略交集分析.py
+
+      - name: 檢查結果
+        run: |
+          if [ -f "data/latest/多策略交集.csv" ]; then
+            echo "=== 多策略交集分析結果 ==="
+            ls -lh data/latest/多策略交集.csv
+            echo "=== 符合條件的股票數量 ==="
+            tail -n +2 data/latest/多策略交集.csv | wc -l
+            echo "=== 前10筆資料預覽 ==="
+            head -11 data/latest/多策略交集.csv
+          fi
+
+      - name: 提交變更到 GitHub
+        run: |
+          git config user.name "GitHub Actions Bot"
+          git config user.email "actions@github.com"
+          git add data/latest/多策略交集.csv
+          git diff --staged --quiet || git commit -m "📊 多策略交集分析更新 - $(TZ='Asia/Taipei' date +'%Y-%m-%d %H:%M')"
+          git push || echo "沒有變更需要推送"
