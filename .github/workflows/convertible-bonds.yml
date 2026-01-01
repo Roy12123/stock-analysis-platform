@@ -1,0 +1,42 @@
+name: 可轉債篩選 (每日 18:20 台北時間)
+
+on:
+  schedule:
+    - cron: '20 10 * * *'  # UTC 10:20 = 台北 18:20
+  workflow_dispatch:  # 允許手動觸發
+
+permissions:
+  contents: write  # 允許推送到 repository
+
+jobs:
+  run-convertible-bonds:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pandas requests
+
+      - name: Run convertible bond filter
+        env:
+          FINMIND_TOKEN: ${{ secrets.FINMIND_TOKEN }}
+        run: |
+          cd python
+          python filter_convertible_bonds.py
+
+      - name: Commit and push results
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add data/latest/可轉債篩選.csv
+          git diff --staged --quiet || git commit -m "🤖 更新可轉債篩選結果 $(TZ='Asia/Taipei' date +'%Y-%m-%d %H:%M')"
+          git push
