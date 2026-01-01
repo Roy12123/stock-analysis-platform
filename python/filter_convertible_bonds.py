@@ -350,13 +350,13 @@ def filter_convertible_bonds():
     result_df = result_df.drop('abs_diff', axis=1)
 
     # 匯出結果到 public/data/latest 目錄
-    output_file_latest = '../public/data/latest/可轉債篩選.csv' if os.path.exists('../public/data/latest') else 'public/data/latest/可轉債篩選.csv'
+    output_file_latest = '../public/data/latest/convertible-bonds.csv' if os.path.exists('../public/data/latest') else 'public/data/latest/convertible-bonds.csv'
     os.makedirs(os.path.dirname(output_file_latest), exist_ok=True)
     result_df.to_csv(output_file_latest, index=False, encoding='utf-8-sig')
 
     # 同時匯出到 history 目錄（以日期命名）
     history_date = trading_date.replace('-', '')
-    output_file_history = f'../public/data/history/{history_date}/可轉債篩選.csv' if os.path.exists('../public/data/history') else f'public/data/history/{history_date}/可轉債篩選.csv'
+    output_file_history = f'../public/data/history/{history_date}/convertible-bonds.csv' if os.path.exists('../public/data/history') else f'public/data/history/{history_date}/convertible-bonds.csv'
     os.makedirs(os.path.dirname(output_file_history), exist_ok=True)
     result_df.to_csv(output_file_history, index=False, encoding='utf-8-sig')
 

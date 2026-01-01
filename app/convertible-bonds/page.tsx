@@ -10,7 +10,7 @@ export default function ConvertibleBondsPage() {
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    fetch('/data/latest/可轉債篩選.csv')
+    fetch('/data/latest/convertible-bonds.csv')
       .then(res => res.text())
       .then(csvText => {
         Papa.parse(csvText, {
