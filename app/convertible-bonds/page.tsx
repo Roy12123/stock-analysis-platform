@@ -10,7 +10,8 @@ export default function ConvertibleBondsPage() {
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    fetch('/data/latest/convertible-bonds.csv')
+    const basePath = process.env.NODE_ENV === 'production' ? '/stock-analysis-platform' : ''
+    fetch(`${basePath}/data/latest/convertible-bonds.csv`)
       .then(res => res.text())
       .then(csvText => {
         Papa.parse(csvText, {
