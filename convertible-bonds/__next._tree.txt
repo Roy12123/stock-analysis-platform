@@ -1,4 +1,4 @@
 :HL["/stock-analysis-platform/_next/static/chunks/83bdfa158ac175f9.css","style"]
 :HL["/stock-analysis-platform/_next/static/chunks/20e868e152b42a2f.css","style"]
 :HL["/stock-analysis-platform/_next/static/media/fb4edce8a3cbfef3-s.p.fe3c897b.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
-0:{"buildId":"5cGi-fbaKBbsAFKKwtj-u","tree":{"name":"","paramType":null,"paramKey":"","hasRuntimePrefetch":false,"slots":{"children":{"name":"convertible-bonds","paramType":null,"paramKey":"convertible-bonds","hasRuntimePrefetch":false,"slots":{"children":{"name":"__PAGE__","paramType":null,"paramKey":"__PAGE__","hasRuntimePrefetch":false,"slots":null,"isRootLayout":false}},"isRootLayout":false}},"isRootLayout":true},"staleTime":300}
+0:{"buildId":"JkGsG4D6n5oo0teGQYWSw","tree":{"name":"","paramType":null,"paramKey":"","hasRuntimePrefetch":false,"slots":{"children":{"name":"convertible-bonds","paramType":null,"paramKey":"convertible-bonds","hasRuntimePrefetch":false,"slots":{"children":{"name":"__PAGE__","paramType":null,"paramKey":"__PAGE__","hasRuntimePrefetch":false,"slots":null,"isRootLayout":false}},"isRootLayout":false}},"isRootLayout":true},"staleTime":300}
