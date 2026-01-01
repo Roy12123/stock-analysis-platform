@@ -37,6 +37,6 @@ jobs:
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          git add data/latest/可轉債篩選.csv
+          git add public/data/latest/可轉債篩選.csv
           git diff --staged --quiet || git commit -m "🤖 更新可轉債篩選結果 $(TZ='Asia/Taipei' date +'%Y-%m-%d %H:%M')"
           git push

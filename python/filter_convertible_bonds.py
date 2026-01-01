@@ -349,8 +349,8 @@ def filter_convertible_bonds():
     result_df = result_df.sort_values('abs_diff')
     result_df = result_df.drop('abs_diff', axis=1)
 
-    # 匯出結果到 data/latest 目錄
-    output_file = '../data/latest/可轉債篩選.csv' if os.path.exists('../data/latest') else 'data/latest/可轉債篩選.csv'
+    # 匯出結果到 public/data/latest 目錄
+    output_file = '../public/data/latest/可轉債篩選.csv' if os.path.exists('../public/data/latest') else 'public/data/latest/可轉債篩選.csv'
     os.makedirs(os.path.dirname(output_file), exist_ok=True)
     result_df.to_csv(output_file, index=False, encoding='utf-8-sig')
 
