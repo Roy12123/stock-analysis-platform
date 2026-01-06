@@ -208,7 +208,7 @@ export default function ConvertibleBondTable({ data }: ConvertibleBondTableProps
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                     <a
-                      href={`https://goodinfo.tw/tw/ShowK_Chart.asp?STOCK_ID=${row.股票代碼}`}
+                      href={`https://goodinfo.tw/tw/ShowBuySaleChart.asp?STOCK_ID=${row.股票代碼}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-blue-600 hover:text-blue-800 hover:underline"
