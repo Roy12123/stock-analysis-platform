@@ -1,4 +1,4 @@
 1:"$Sreact.fragment"
 2:I[39756,["/stock-analysis-platform/_next/static/chunks/ff1a16fafef87110.js","/stock-analysis-platform/_next/static/chunks/247eb132b7f7b574.js"],"default"]
 3:I[37457,["/stock-analysis-platform/_next/static/chunks/ff1a16fafef87110.js","/stock-analysis-platform/_next/static/chunks/247eb132b7f7b574.js"],"default"]
-0:{"buildId":"JkGsG4D6n5oo0teGQYWSw","rsc":["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","template":["$","$L3",null,{}]}]]}],"loading":null,"isPartial":false}
+0:{"buildId":"uhRfczCXY16ED5U1HAV9v","rsc":["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","template":["$","$L3",null,{}]}]]}],"loading":null,"isPartial":false}
