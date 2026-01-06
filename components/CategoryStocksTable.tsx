@@ -85,7 +85,7 @@ export default function CategoryStocksTable({ data }: CategoryStocksTableProps) 
       const stockId = strValue.trim()
       return (
         <a
-          href={`https://goodinfo.tw/tw/ShowK_Chart.asp?STOCK_ID=${stockId}`}
+          href={`https://goodinfo.tw/tw/ShowBuySaleChart.asp?STOCK_ID=${stockId}`}
           target="_blank"
           rel="noopener noreferrer"
           className="text-blue-600 hover:text-blue-800 hover:underline font-medium"
