@@ -45,6 +45,9 @@ export default function RootLayout({
                     資料每日自動更新 | 台北時間 10:00 & 18:00
                   </p>
                 </div>
+                <p className="text-xs text-gray-400 mb-1">
+                  聯絡信箱：<a href="mailto:roy851130@gmail.com" className="text-blue-400 hover:text-blue-300 hover:underline">roy851130@gmail.com</a>
+                </p>
                 <p className="text-xs text-gray-400">
                   © {new Date().getFullYear()} 台股分析平台. All rights reserved.
                 </p>
