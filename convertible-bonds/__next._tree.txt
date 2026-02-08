@@ -1,4 +1,4 @@
-:HL["/stock-analysis-platform/_next/static/chunks/83bdfa158ac175f9.css","style"]
-:HL["/stock-analysis-platform/_next/static/chunks/20e868e152b42a2f.css","style"]
-:HL["/stock-analysis-platform/_next/static/media/fb4edce8a3cbfef3-s.p.fe3c897b.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
-0:{"buildId":"sOu0_mXJYQZeNv6VxOgjb","tree":{"name":"","paramType":null,"paramKey":"","hasRuntimePrefetch":false,"slots":{"children":{"name":"convertible-bonds","paramType":null,"paramKey":"convertible-bonds","hasRuntimePrefetch":false,"slots":{"children":{"name":"__PAGE__","paramType":null,"paramKey":"__PAGE__","hasRuntimePrefetch":false,"slots":null,"isRootLayout":false}},"isRootLayout":false}},"isRootLayout":true},"staleTime":300}
+:HL["/stock-analysis-platform/_next/static/chunks/5518c2e2f2e2b0c7.css","style"]
+:HL["/stock-analysis-platform/_next/static/chunks/53147d1b43bc8880.css","style"]
+:HL["/stock-analysis-platform/_next/static/media/fb4edce8a3cbfef3-s.p.179b8591.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
+0:{"buildId":"wqN0i3AjF4ny-oERLwc8Q","tree":{"name":"","paramType":null,"paramKey":"","hasRuntimePrefetch":false,"slots":{"children":{"name":"convertible-bonds","paramType":null,"paramKey":"convertible-bonds","hasRuntimePrefetch":false,"slots":{"children":{"name":"__PAGE__","paramType":null,"paramKey":"__PAGE__","hasRuntimePrefetch":false,"slots":null,"isRootLayout":false}},"isRootLayout":false}},"isRootLayout":true},"staleTime":300}
