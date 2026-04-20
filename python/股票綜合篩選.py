@@ -26,7 +26,7 @@ try:
     with open('token', 'r') as f:
         TOKEN = f.read().strip()
 except FileNotFoundError:
-    TOKEN = os.getenv('FINMIND_TOKEN', '')
+    TOKEN = os.getenv('FINMIND_TOKEN', '').strip()
 
 API_URL = "https://api.finmindtrade.com/api/v4/data"
 HEADERS = {"Authorization": f"Bearer {TOKEN}"}
