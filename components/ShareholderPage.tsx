@@ -30,7 +30,28 @@ export default function ShareholderPage() {
           header: true,
           skipEmptyLines: true,
           complete: (results) => {
-            setData(results.data as Record<string, string | number>[])
+            const raw = results.data as Record<string, string | number>[]
+
+            // 簡化公司產業，並調整欄位順序（公司名稱在前）
+            const processed = raw.map(row => {
+              const newRow: Record<string, string | number> = {}
+              const keys = Object.keys(row)
+              const nameIdx = keys.indexOf('公司名稱')
+              const industryIdx = keys.indexOf('公司產業')
+              if (nameIdx > industryIdx && nameIdx !== -1 && industryIdx !== -1) {
+                keys.splice(nameIdx, 1)
+                keys.splice(industryIdx, 0, '公司名稱')
+              }
+              keys.forEach(k => {
+                const val = row[k]
+                newRow[k] = k === '公司產業' && typeof val === 'string'
+                  ? val.replace(/^全部\(.*\)$/, '全部')
+                  : val
+              })
+              return newRow
+            })
+
+            setData(processed)
 
             // 從檔案名稱提取日期（如果可能的話）
             // 或顯示通用的分析期間說明

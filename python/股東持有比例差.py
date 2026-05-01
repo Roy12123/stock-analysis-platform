@@ -275,11 +275,14 @@ try:
 
             # 調整欄位順序
             cols = result.columns.tolist()
-            for col in ['公司名稱', '公司產業']:
+            for col in ['公司產業', '公司名稱']:
                 if col in cols:
                     cols.remove(col)
                     cols.insert(2, col)
             result = result[cols]
+            # 簡化公司產業欄位顯示
+            if '公司產業' in result.columns:
+                result['公司產業'] = result['公司產業'].str.replace(r'^全部\(.*\)$', '全部', regex=True)
 except Exception as e:
     print(f"獲取公司資訊時發生錯誤: {str(e)}")
 
