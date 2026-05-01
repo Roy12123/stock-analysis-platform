@@ -1,8 +1,8 @@
-name: 可轉債篩選 (每日 18:20 台北時間)
+name: 可轉債篩選 (每日 18:00 台北時間)
 
 on:
   schedule:
-    - cron: '20 10 * * *'  # UTC 10:20 = 台北 18:20
+    - cron: '0 10 * * *'  # UTC 10:00 = 台北 18:00
   workflow_dispatch:  # 允許手動觸發
 
 permissions:

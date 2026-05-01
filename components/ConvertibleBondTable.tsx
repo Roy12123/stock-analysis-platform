@@ -1,60 +1,66 @@
 'use client'
 
 import { useState, useMemo } from 'react'
-import { formatNumber, getPriceColor } from '@/lib/utils'
 
 interface ConvertibleBondData {
-  公司名稱: string
-  股票代碼: string
-  最新收盤價: number
-  標的債券: string
-  債券代號: string
+  CB代號: string
+  CB名稱: string
+  個股現價: number
   轉換價格: number
-  差異百分比: number
-  股票成交量: number
-  股票5MA: number
-  可轉債成交量: number
-  可轉債5MA: number
+  '餘額比例(%)': number | string
+  '距轉換價差距(%)': number
+  '已發行/近期上市': string
 }
 
 interface ConvertibleBondTableProps {
   data: ConvertibleBondData[]
 }
 
+type TabType = '全部' | '已發行CB' | '近期上市'
+
 export default function ConvertibleBondTable({ data }: ConvertibleBondTableProps) {
-  const [sortColumn, setSortColumn] = useState<string>('差異百分比')
+  const [activeTab, setActiveTab] = useState<TabType>('全部')
+  const [sortColumn, setSortColumn] = useState<string>('距轉換價差距(%)')
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc')
   const [currentPage, setCurrentPage] = useState(1)
   const itemsPerPage = 20
 
-  // 排序資料
-  const sortedData = useMemo(() => {
-    if (!sortColumn) return data
+  const tabCounts = useMemo(() => ({
+    全部: data.length,
+    已發行CB: data.filter(r => r['已發行/近期上市'] === '已發行CB').length,
+    近期上市: data.filter(r => r['已發行/近期上市'] === '近期上市').length,
+  }), [data])
 
-    return [...data].sort((a, b) => {
+  const filteredData = useMemo(() => {
+    if (activeTab === '全部') return data
+    return data.filter(r => r['已發行/近期上市'] === activeTab)
+  }, [data, activeTab])
+
+  const sortedData = useMemo(() => {
+    if (!sortColumn) return filteredData
+    return [...filteredData].sort((a, b) => {
       const aVal = a[sortColumn as keyof ConvertibleBondData]
       const bVal = b[sortColumn as keyof ConvertibleBondData]
-
-      // 數字比較
+      if (sortColumn === '距轉換價差距(%)') {
+        const aAbs = Math.abs(Number(aVal))
+        const bAbs = Math.abs(Number(bVal))
+        return sortDirection === 'asc' ? aAbs - bAbs : bAbs - aAbs
+      }
       if (typeof aVal === 'number' && typeof bVal === 'number') {
         return sortDirection === 'asc' ? aVal - bVal : bVal - aVal
       }
-
-      // 字串比較
       return sortDirection === 'asc'
         ? String(aVal).localeCompare(String(bVal))
         : String(bVal).localeCompare(String(aVal))
     })
-  }, [data, sortColumn, sortDirection])
+  }, [filteredData, sortColumn, sortDirection])
 
-  // 分頁資料
   const totalPages = Math.ceil(sortedData.length / itemsPerPage)
   const paginatedData = sortedData.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   )
 
-  // 處理排序
   const handleSort = (column: string) => {
     if (sortColumn === column) {
       setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc')
@@ -62,6 +68,30 @@ export default function ConvertibleBondTable({ data }: ConvertibleBondTableProps
       setSortColumn(column)
       setSortDirection('asc')
     }
+    setCurrentPage(1)
+  }
+
+  const handleTabChange = (tab: TabType) => {
+    setActiveTab(tab)
+    setCurrentPage(1)
+  }
+
+  const SortIcon = ({ column }: { column: string }) =>
+    sortColumn === column ? (
+      <span className="text-blue-600">{sortDirection === 'asc' ? '↑' : '↓'}</span>
+    ) : null
+
+  const GapBadge = ({ value }: { value: number }) => {
+    const color = value > 0
+      ? 'text-red-600 bg-red-50'
+      : value < 0
+        ? 'text-green-600 bg-green-50'
+        : 'text-gray-600 bg-gray-50'
+    return (
+      <span className={`inline-block px-2 py-0.5 rounded text-xs font-medium ${color}`}>
+        {value > 0 ? '+' : ''}{value.toFixed(2)}%
+      </span>
+    )
   }
 
   if (data.length === 0) {
@@ -69,208 +99,128 @@ export default function ConvertibleBondTable({ data }: ConvertibleBondTableProps
       <div className="text-center py-12">
         <div className="text-6xl mb-4">📊</div>
         <p className="text-gray-500 text-lg">目前沒有符合條件的可轉債</p>
-        <p className="text-gray-400 text-sm mt-2">資料將在每日 18:20 自動更新</p>
+        <p className="text-gray-400 text-sm mt-2">資料將在每日 18:00 自動更新</p>
       </div>
     )
   }
 
+  const tabs: TabType[] = ['全部', '已發行CB', '近期上市']
+
   return (
     <div className="space-y-4">
-      <div className="text-sm text-gray-600">
-        共 {data.length} 檔可轉債符合條件
+      {/* Tab 切換 */}
+      <div className="flex gap-2 border-b border-gray-200">
+        {tabs.map(tab => (
+          <button
+            key={tab}
+            onClick={() => handleTabChange(tab)}
+            className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
+              activeTab === tab
+                ? 'border-blue-600 text-blue-600'
+                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+            }`}
+          >
+            {tab}
+            <span className={`ml-1.5 text-xs px-1.5 py-0.5 rounded-full ${
+              activeTab === tab ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-500'
+            }`}>
+              {tabCounts[tab]}
+            </span>
+          </button>
+        ))}
+      </div>
+
+      <div className="text-sm text-gray-500">
+        共 {sortedData.length} 檔符合條件
       </div>
 
       <div className="overflow-x-auto border border-gray-200 rounded-lg">
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-16">
+              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase w-12">
                 排名
               </th>
-              <th
-                onClick={() => handleSort('公司名稱')}
-                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors"
-              >
-                <div className="flex items-center gap-1">
-                  公司名稱
-                  {sortColumn === '公司名稱' && (
-                    <span className="text-blue-600">
-                      {sortDirection === 'asc' ? '↑' : '↓'}
-                    </span>
-                  )}
-                </div>
-              </th>
-              <th
-                onClick={() => handleSort('股票代碼')}
-                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors"
-              >
-                <div className="flex items-center gap-1">
-                  股票代碼
-                  {sortColumn === '股票代碼' && (
-                    <span className="text-blue-600">
-                      {sortDirection === 'asc' ? '↑' : '↓'}
-                    </span>
-                  )}
-                </div>
-              </th>
-              <th
-                onClick={() => handleSort('最新收盤價')}
-                className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors"
-              >
-                <div className="flex items-center justify-end gap-1">
-                  最新收盤價
-                  {sortColumn === '最新收盤價' && (
-                    <span className="text-blue-600">
-                      {sortDirection === 'asc' ? '↑' : '↓'}
-                    </span>
-                  )}
-                </div>
-              </th>
-              <th
-                onClick={() => handleSort('標的債券')}
-                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors"
-              >
-                <div className="flex items-center gap-1">
-                  標的債券
-                  {sortColumn === '標的債券' && (
-                    <span className="text-blue-600">
-                      {sortDirection === 'asc' ? '↑' : '↓'}
-                    </span>
-                  )}
-                </div>
-              </th>
-              <th
-                onClick={() => handleSort('轉換價格')}
-                className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors"
-              >
-                <div className="flex items-center justify-end gap-1">
-                  轉換價格
-                  {sortColumn === '轉換價格' && (
-                    <span className="text-blue-600">
-                      {sortDirection === 'asc' ? '↑' : '↓'}
-                    </span>
-                  )}
-                </div>
-              </th>
-              <th
-                onClick={() => handleSort('差異百分比')}
-                className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors"
-              >
-                <div className="flex items-center justify-end gap-1">
-                  差異百分比
-                  {sortColumn === '差異百分比' && (
-                    <span className="text-blue-600">
-                      {sortDirection === 'asc' ? '↑' : '↓'}
-                    </span>
-                  )}
-                </div>
-              </th>
-              <th
-                onClick={() => handleSort('股票成交量')}
-                className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors"
-              >
-                <div className="flex items-center justify-end gap-1">
-                  股票量/5MA
-                  {sortColumn === '股票成交量' && (
-                    <span className="text-blue-600">
-                      {sortDirection === 'asc' ? '↑' : '↓'}
-                    </span>
-                  )}
-                </div>
-              </th>
-              <th
-                onClick={() => handleSort('可轉債成交量')}
-                className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors"
-              >
-                <div className="flex items-center justify-end gap-1">
-                  轉債量/5MA
-                  {sortColumn === '可轉債成交量' && (
-                    <span className="text-blue-600">
-                      {sortDirection === 'asc' ? '↑' : '↓'}
-                    </span>
-                  )}
-                </div>
-              </th>
+              {[
+                { key: 'CB代號', label: 'CB 代號', align: 'left' },
+                { key: 'CB名稱', label: 'CB 名稱', align: 'left' },
+                { key: '個股現價', label: '個股現價', align: 'right' },
+                { key: '轉換價格', label: '轉換價格', align: 'right' },
+                { key: '距轉換價差距(%)', label: '距轉換價差距', align: 'right' },
+                { key: '餘額比例(%)', label: '餘額比例(%)', align: 'right' },
+                { key: '已發行/近期上市', label: '類型', align: 'center' },
+              ].map(({ key, label, align }) => (
+                <th
+                  key={key}
+                  onClick={() => handleSort(key)}
+                  className={`px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors text-${align}`}
+                >
+                  <div className={`flex items-center gap-1 ${align === 'right' ? 'justify-end' : align === 'center' ? 'justify-center' : ''}`}>
+                    {label}
+                    <SortIcon column={key} />
+                  </div>
+                </th>
+              ))}
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {paginatedData.map((row, idx) => {
-              const stockVolumeRatio = row.股票5MA > 0 ? row.股票成交量 / row.股票5MA : 0
-              const cbVolumeRatio = row.可轉債5MA > 0 ? row.可轉債成交量 / row.可轉債5MA : 0
-
-              return (
-                <tr key={idx} className="hover:bg-gray-50 transition-colors">
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    #{(currentPage - 1) * itemsPerPage + idx + 1}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {row.公司名稱}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                    <a
-                      href={`https://goodinfo.tw/tw/ShowBuySaleChart.asp?STOCK_ID=${row.股票代碼}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-blue-600 hover:text-blue-800 hover:underline"
-                    >
-                      {row.股票代碼}
-                    </a>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 text-right">
-                    {formatNumber(row.最新收盤價)}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {row.標的債券}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 text-right">
-                    {formatNumber(row.轉換價格)}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-right">
-                    <span className={getPriceColor(row.差異百分比)}>
-                      {row.差異百分比.toFixed(2)}%
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 text-right">
-                    <div className="space-y-1">
-                      <div>{formatNumber(row.股票成交量)}</div>
-                      <div className="text-xs text-gray-500">
-                        {stockVolumeRatio.toFixed(2)}x
-                      </div>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 text-right">
-                    <div className="space-y-1">
-                      <div>{formatNumber(row.可轉債成交量)}</div>
-                      <div className="text-xs text-gray-500">
-                        {cbVolumeRatio.toFixed(2)}x
-                      </div>
-                    </div>
-                  </td>
-                </tr>
-              )
-            })}
+            {paginatedData.map((row, idx) => (
+              <tr key={idx} className="hover:bg-gray-50 transition-colors">
+                <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-400">
+                  #{(currentPage - 1) * itemsPerPage + idx + 1}
+                </td>
+                <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-900">
+                  {row.CB代號}
+                </td>
+                <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-700">
+                  {row.CB名稱}
+                </td>
+                <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900 text-right">
+                  {row.個股現價.toFixed(2)}
+                </td>
+                <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900 text-right">
+                  {row.轉換價格.toFixed(2)}
+                </td>
+                <td className="px-4 py-3 whitespace-nowrap text-right">
+                  <GapBadge value={row['距轉換價差距(%)']} />
+                </td>
+                <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-700 text-right">
+                  {row['餘額比例(%)'] !== '' && row['餘額比例(%)'] !== null
+                    ? `${Number(row['餘額比例(%)']).toFixed(1)}%`
+                    : '-'}
+                </td>
+                <td className="px-4 py-3 whitespace-nowrap text-center">
+                  <span className={`inline-block px-2 py-0.5 rounded-full text-xs font-medium ${
+                    row['已發行/近期上市'] === '近期上市'
+                      ? 'bg-purple-100 text-purple-700'
+                      : 'bg-blue-100 text-blue-700'
+                  }`}>
+                    {row['已發行/近期上市']}
+                  </span>
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>
 
-      {/* 分頁 */}
       {totalPages > 1 && (
         <div className="flex items-center justify-between">
-          <div className="text-sm text-gray-600">
+          <div className="text-sm text-gray-500">
             第 {currentPage} 頁，共 {totalPages} 頁
           </div>
           <div className="flex gap-2">
             <button
               onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
               disabled={currentPage === 1}
-              className="px-4 py-2 border border-gray-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors"
+              className="px-4 py-2 border border-gray-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors text-sm"
             >
               上一頁
             </button>
             <button
               onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
               disabled={currentPage === totalPages}
-              className="px-4 py-2 border border-gray-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors"
+              className="px-4 py-2 border border-gray-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors text-sm"
             >
               下一頁
             </button>
