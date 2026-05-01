@@ -37,16 +37,19 @@ def fetch_stock_prices(token: str) -> tuple[str, dict[str, float]]:
     for _ in range(10):
         if d.weekday() < 5:
             date_str = d.strftime("%Y-%m-%d")
-            r = requests.get(
-                FINMIND_URL,
-                params={"dataset": "TaiwanStockPrice", "start_date": date_str, "token": token},
-                timeout=60,
-            )
-            r.raise_for_status()
-            records = r.json().get("data", [])
-            if records:
-                price_map = {rec["stock_id"]: float(rec["close"]) for rec in records if rec.get("close") is not None}
-                return date_str, price_map
+            try:
+                r = requests.get(
+                    FINMIND_URL,
+                    params={"dataset": "TaiwanStockPrice", "start_date": date_str, "token": token},
+                    timeout=60,
+                )
+                if r.status_code == 200:
+                    records = r.json().get("data", [])
+                    if records:
+                        price_map = {rec["stock_id"]: float(rec["close"]) for rec in records if rec.get("close") is not None}
+                        return date_str, price_map
+            except Exception as e:
+                print(f"  {date_str} 查詢失敗：{e}")
         d -= timedelta(days=1)
     raise RuntimeError("找不到近期有效交易日資料")
 
