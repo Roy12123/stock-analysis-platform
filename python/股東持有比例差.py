@@ -17,9 +17,12 @@ API_URL = "https://api.finmindtrade.com/api/v4/data"
 # 優先從 token 文件讀取，如果不存在則使用環境變數
 try:
     with open('token', 'r') as f:
-        API_TOKEN = f.read().strip()
+        API_TOKEN = f.read()
 except FileNotFoundError:
     API_TOKEN = os.getenv('FINMIND_TOKEN', '')
+# 清除所有空白與控制字元（防止貼上時帶入換行符導致 HTTP header 無效）
+import re
+API_TOKEN = re.sub(r'[\s\x00-\x1f\x7f]', '', API_TOKEN)
 API_HEADERS = {"Authorization": f"Bearer {API_TOKEN}"}
 
 # 檔案路徑（使用相對路徑）
