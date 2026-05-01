@@ -34,24 +34,28 @@ def fetch_cbas(endpoint: str) -> list[dict]:
 
 def fetch_stock_prices(token: str) -> tuple[str, dict[str, float]]:
     d = datetime.today()
-    for _ in range(10):
-        if d.weekday() < 5:
-            date_str = d.strftime("%Y-%m-%d")
-            try:
-                r = requests.get(
-                    FINMIND_URL,
-                    params={"dataset": "TaiwanStockPrice", "start_date": date_str, "token": token},
-                    timeout=60,
-                )
-                if r.status_code == 200:
-                    records = r.json().get("data", [])
-                    if records:
-                        price_map = {rec["stock_id"]: float(rec["close"]) for rec in records if rec.get("close") is not None}
-                        return date_str, price_map
-            except Exception as e:
-                print(f"  {date_str} 查詢失敗：{e}")
+    while True:
+        date_str = d.strftime("%Y-%m-%d")
+        print(f"  嘗試日期：{date_str}...", end=" ")
+        try:
+            r = requests.get(
+                FINMIND_URL,
+                params={"dataset": "TaiwanStockPrice", "start_date": date_str, "token": token},
+                timeout=60,
+            )
+            if r.status_code == 200:
+                records = r.json().get("data", [])
+                if records:
+                    print("找到資料")
+                    price_map = {rec["stock_id"]: float(rec["close"]) for rec in records if rec.get("close") is not None}
+                    return date_str, price_map
+                else:
+                    print("無資料，往前一天")
+            else:
+                print(f"回傳 {r.status_code}，往前一天")
+        except Exception as e:
+            print(f"失敗（{e}），往前一天")
         d -= timedelta(days=1)
-    raise RuntimeError("找不到近期有效交易日資料")
 
 
 def filter_convertible_bonds():
