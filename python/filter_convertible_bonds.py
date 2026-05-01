@@ -32,30 +32,23 @@ def fetch_cbas(endpoint: str) -> list[dict]:
     return r.json()["result"]
 
 
-def fetch_stock_prices(token: str) -> tuple[str, dict[str, float]]:
-    d = datetime.today()
-    while True:
-        date_str = d.strftime("%Y-%m-%d")
-        print(f"  嘗試日期：{date_str}...", end=" ")
-        try:
-            r = requests.get(
-                FINMIND_URL,
-                params={"dataset": "TaiwanStockPrice", "start_date": date_str, "token": token},
-                timeout=60,
-            )
-            if r.status_code == 200:
-                records = r.json().get("data", [])
-                if records:
-                    print("找到資料")
-                    price_map = {rec["stock_id"]: float(rec["close"]) for rec in records if rec.get("close") is not None}
-                    return date_str, price_map
-                else:
-                    print("無資料，往前一天")
-            else:
-                print(f"回傳 {r.status_code}，往前一天")
-        except Exception as e:
-            print(f"失敗（{e}），往前一天")
-        d -= timedelta(days=1)
+def fetch_stock_prices(token: str) -> tuple[str, dict[str, float]] | None:
+    date_str = datetime.today().strftime("%Y-%m-%d")
+    print(f"  查詢日期：{date_str}")
+    try:
+        r = requests.get(
+            FINMIND_URL,
+            params={"dataset": "TaiwanStockPrice", "start_date": date_str, "token": token},
+            timeout=60,
+        )
+        if r.status_code == 200:
+            records = r.json().get("data", [])
+            if records:
+                price_map = {rec["stock_id"]: float(rec["close"]) for rec in records if rec.get("close") is not None}
+                return date_str, price_map
+    except Exception as e:
+        print(f"  查詢失敗：{e}")
+    return None
 
 
 def filter_convertible_bonds():
@@ -74,7 +67,11 @@ def filter_convertible_bonds():
     print(f"  已發行CB {len(issued_raw)} 筆 / 近期上市 {len(listed_raw)} 筆")
 
     print("抓取股票現價...")
-    price_date, price_map = fetch_stock_prices(token)
+    result = fetch_stock_prices(token)
+    if result is None:
+        print("  今日非交易日，不更新資料")
+        return None
+    price_date, price_map = result
     print(f"  股價日期：{price_date}，共 {len(price_map)} 支")
 
     # ── 整理資料 ──
