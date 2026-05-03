@@ -611,7 +611,7 @@ def check_breakthrough(stock_df, target_date, check_days=3):
         volume_ma_20_lots = volume_ma_20 / 1000
         volume_ratio = check_volume_lots / volume_ma_20_lots
 
-        if volume_ratio > 2 and check_volume_lots > 5000:
+        if volume_ratio > 3 and check_volume_lots > 5000:
             if check_open > 0:
                 price_change_pct = ((today_close - check_open) / check_open) * 100
             else:
@@ -635,7 +635,7 @@ def check_breakthrough(stock_df, target_date, check_days=3):
 def screen_breakthrough(target_date, price_df_all, valid_stocks, stock_info):
     """篩選盤整突破"""
     print("\n【策略4：盤整突破】")
-    print(f"  篩選條件：成交量>20MA的2倍、成交量>5000張、近3個交易日內突破")
+    print(f"  篩選條件：成交量>20MA的3倍、成交量>5000張、近3個交易日內突破")
 
     # 找出最近的交易日
     available_dates = sorted(price_df_all['date'].unique(), reverse=True)
