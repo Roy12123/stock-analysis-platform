@@ -74,7 +74,7 @@ def load_history_dates(n: int = 4) -> list:
 
 def load_raw(date: str):
     f = HISTORY_DIR / date / '主力買賣超_raw.csv'
-    return pd.read_csv(f) if f.exists() else None
+    return pd.read_csv(f, dtype={'stock_id': str}) if f.exists() else None
 
 
 def enrich(df: pd.DataFrame, stock_map: dict) -> pd.DataFrame:
