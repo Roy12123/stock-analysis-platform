@@ -24,11 +24,7 @@ TOKEN = re.sub(r'[\s\x00-\x1f\x7f]', '', TOKEN)
 API_URL = "https://api.finmindtrade.com/api/v4/data"
 HEADERS = {"Authorization": f"Bearer {TOKEN}"}
 
-import argparse
-_parser = argparse.ArgumentParser()
-_parser.add_argument('--date', default=None, help='指定抓取日期 YYYY-MM-DD，預設為今日')
-_args, _ = _parser.parse_known_args()
-TODAY = _args.date if _args.date else datetime.now().strftime('%Y-%m-%d')
+TODAY = datetime.now().strftime('%Y-%m-%d')
 HISTORY_DIR = Path('../data/history')
 LATEST_DIR = Path('../data/latest')
 SLEEP_SEC = 0.65  # ~92 req/min，低於上限 100/min
