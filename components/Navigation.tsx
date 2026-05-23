@@ -9,6 +9,7 @@ const strategies = [
   { name: '首頁', href: '/', icon: '🏠' },
   { name: '外資大量買超', href: '/foreign-investment', icon: '🌐' },
   { name: '投信連續買超', href: '/investment-trust', icon: '🏦' },
+  { name: '主力買賣超', href: '/main-force', icon: '🏹' },
   { name: '強勢股篩選', href: '/strong-stocks', icon: '📈' },
   { name: '盤整突破', href: '/breakthrough', icon: '🔥' },
   { name: '可轉債篩選', href: '/convertible-bonds', icon: '💰' },

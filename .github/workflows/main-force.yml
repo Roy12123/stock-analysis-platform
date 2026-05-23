@@ -1,0 +1,44 @@
+name: 主力買賣超 (每日 21:00 台北時間)
+
+on:
+  schedule:
+    - cron: '0 13 * * 1-5'  # UTC 13:00 = 台北 21:00（週一至五）
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  run-analysis:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - name: 檢出代碼
+        uses: actions/checkout@v4
+
+      - name: 設置 Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: 安裝 Python 依賴
+        run: |
+          cd python
+          pip install -r requirements.txt
+
+      - name: 執行主力買賣超分析
+        env:
+          FINMIND_TOKEN: ${{ secrets.FINMIND_TOKEN }}
+        run: |
+          cd python
+          python 主力買賣超.py
+
+      - name: 提交變更到 GitHub
+        run: |
+          git config user.name "GitHub Actions Bot"
+          git config user.email "actions@github.com"
+          git add data/
+          git diff --staged --quiet || git commit -m "📊 更新主力買賣超資料 - $(TZ='Asia/Taipei' date +'%Y-%m-%d %H:%M')"
+          git push || echo "沒有變更需要推送"
