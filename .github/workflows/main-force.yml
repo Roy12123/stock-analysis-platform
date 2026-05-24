@@ -2,7 +2,7 @@ name: 主力買賣超 (每日 21:00 台北時間)
 
 on:
   schedule:
-    - cron: '0 13 * * 1-5'  # UTC 13:00 = 台北 21:00（週一至五）
+    - cron: '30 11 * * 1-5'  # UTC 11:30 = 台北 19:30（週一至五）
   workflow_dispatch:
 
 permissions:
